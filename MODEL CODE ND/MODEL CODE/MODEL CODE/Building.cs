@@ -11,7 +11,7 @@ namespace MODEL_CODE
         protected int x, y, health, maxHealth;
         protected string faction;
         protected char symbol;
-        protected bool isDestroyedB = false;
+        protected bool isDestroyed = false;
         //public static Random r = new Random();
 
 
@@ -59,7 +59,7 @@ namespace MODEL_CODE
 
         public string Faction { get { return faction; } }
 
-        public abstract void DestroyB(); //moved up here, removed bool
+        public abstract void Destroy(); //moved up here, removed bool
 
         public abstract string SaveGame(); //replaced the save void instead of abstract ToString(), the method is already virtual
 

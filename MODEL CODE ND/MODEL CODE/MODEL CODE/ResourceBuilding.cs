@@ -17,7 +17,12 @@ namespace MODEL_CODE
             LOGS
         }
 
-        private string resourceType;
+        private string DetermineResourceType()
+        {
+            return new string[] { "TWIGS", "GRASS", "ROCKS", "LOGS"}[(int)resourceType];
+        }
+
+        private ResourceType resourceType;
         private int resourcesGenerated;
         private int resourcesPerRound;
         private int resourcePoolRemaining;
@@ -25,7 +30,7 @@ namespace MODEL_CODE
 
         public ResourceBuilding(int x, int y, string faction) : base(x, y, 15, /*15,*/ '$', faction/*, "RESOURCE BUILDING", 0, 250, 25, "", 0, 0*/)
         {
-            type = (ResourceType)GameEngine.random.Next(0, 4); //pass the position and faction to make it easier for map class to read
+            resourceType = (ResourceType)GameEngine.random.Next(0, 4); //pass the position and faction to make it easier for map class to read
             resourcesGenerated = 0;
             resourcesPerRound = GameEngine.random.Next(1, 6);
             resourcePoolRemaining = GameEngine.random.Next(100, 200);
@@ -43,7 +48,7 @@ namespace MODEL_CODE
 
             maxHealth = int.Parse(parameters[4]);
 
-            type = (ResourceType)int.Parse(parameters[5]); //parse to int THEN resourceType
+            resourceType = (ResourceType)int.Parse(parameters[5]); //parse to int THEN resourceType
 
             resourcesPerRound = int.Parse(parameters[6]);
 
@@ -64,66 +69,34 @@ namespace MODEL_CODE
             symbol = 'X';
         }
 
-      /*  public override string ResourceType  removed code
+        public void IncreaseResourceAmount()
         {
-            get { return resourceType; }
+            if (isDestroyed == true)
+                return;
+
+            if(resourcePoolRemaining > 0)
+            {
+                int totalResources = Math.Min(resourcePoolRemaining, resourcesPerRound); //avoids getting a negative pool (always has to be more than ( > ) the pool)
+                resourcesGenerated += totalResources;
+                resourcePoolRemaining -= totalResources;
+            }
         }
 
-        public override int ResourcePoolRemaining
+        public override string ToString() //data to dispay in the rich text box
         {
-            get { return resourcePoolRemaining; }
-            set { resourcePoolRemaining = value; }
+            return "RESOURCE (" + symbol + "/" + faction[0] + ")" + "\n" +
+                    "X: " + x + "Y: " + y + "\n" +
+                    "HP: " + health + " / " + maxHealth + "\n" +
+                    "$ -> " + resourceType + " :    " + resourcesGenerated / resourcePoolRemaining + "\n" +
+                    "RSS Per Round: " + resourcesPerRound + "\n";
         }
 
-        public override int ResourcesGenerated
+        public override string SaveGame() //everything converted into a string, separated by commas
         {
-            get { return resourcesGenerated; }
-            set { resourcesGenerated = value; }
-        }
-
-        public override int ResourcesPerRound
-        {
-            get { return resourcesPerRound; }
-            set { resourcesPerRound = value; }
-        }*/
-
-
-        /// RESOURCE GENERATION METHOD RESOURCECHECK() IS IN THE BUILDING CLASS
-
-        ///FACTORY
-
-        /*public override string FactoryUnitType
-        {
-            get { return factoryUnitType; }
-        }
-
-        public override int ProductionSpeed
-        {
-            get { return productionSpeed; }
-            set { productionSpeed = value; }
-        }
-
-        public override int SpawnPoint
-        {
-            get { return spawnPoint; }
-            set {spawnPoint = value; }
-        }*/
-
-        public override void Save()
-        {
-           string spaceMaker = " ";
-            string saveString = resourceType + spaceMaker + x + spaceMaker + y + spaceMaker + health + spaceMaker + maxHealth + spaceMaker + 
-                                symbol + spaceMaker + faction + spaceMaker + resourcesGenerated + spaceMaker + resourcePoolRemaining + spaceMaker + resourcesPerRound + "\n";
-
-            const string FILE_NAME = "BUILDING.txt";
-
-            FileStream outFile = new FileStream(FILE_NAME, FileMode.Create, FileAccess.Write);
-            StreamWriter writer = new StreamWriter(outFile);
-            writer.WriteLine(saveString);
-
-
-            writer.Close();
-            outFile.Close();
+            return string.Format(
+                $"RESOURCE, {x}, {y}, {health} / {maxHealth}, $ -> {(int)resourceType}" + //using $ shortcuts for x, y, etc
+                $"{resourcesPerRound}, {resourcesGenerated} / {resourcePoolRemaining}" +
+                $"{faction}, {symbol}, {isDestroyed}");
         }
     }
 }
