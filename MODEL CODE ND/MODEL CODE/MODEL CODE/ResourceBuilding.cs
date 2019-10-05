@@ -9,62 +9,62 @@ namespace MODEL_CODE
 {
     class ResourceBuilding : Building
     {
-        public ResourceBuilding(int x, int y, string faction) : base(x, y, 15, 15, '$', faction, "RESOURCE BUILDING", 0, 250, 25, "", 0, 0) { }
-
-
-        public override int X
+        public enum ResourceType
         {
-            get { return x; }
-            set { x = value; }
+            TWIGS,
+            GRASS,
+            ROCKS,
+            LOGS
         }
 
-        public override int Y
+        private string resourceType;
+        private int resourcesGenerated;
+        private int resourcesPerRound;
+        private int resourcePoolRemaining;
+
+
+        public ResourceBuilding(int x, int y, string faction) : base(x, y, 15, /*15,*/ '$', faction/*, "RESOURCE BUILDING", 0, 250, 25, "", 0, 0*/)
         {
-            get { return y; }
-            set { y = value; }
+            type = (ResourceType)GameEngine.random.Next(0, 4); //pass the position and faction to make it easier for map class to read
+            resourcesGenerated = 0;
+            resourcesPerRound = GameEngine.random.Next(1, 6);
+            resourcePoolRemaining = GameEngine.random.Next(100, 200);
         }
 
-        public override int Health
+        public ResourceBuilding(string values)
         {
-            get { return health; }
-            set { health = value; }
-        }
+            string[] parameters = values.Split(','); //split strings into array of parameters
 
-        public override int MaxHealth
-        {
-            get { return health; }
-        }
+            x = int.Parse(parameters[1]);
 
-        public override string Faction
-        {
-            get { return faction; }
-        }
+            y = int.Parse(parameters[2]); //pass everything to int
 
-        public override char Symbol
-        {
-            get { return symbol; }
+            health = int.Parse(parameters[3]);
+
+            maxHealth = int.Parse(parameters[4]);
+
+            type = (ResourceType)int.Parse(parameters[5]); //parse to int THEN resourceType
+
+            resourcesPerRound = int.Parse(parameters[6]);
+
+            resourcePoolRemaining = int.Parse(parameters[7]);
+
+            faction = parameters[9];
+
+            symbol = parameters[10][0]; //symbol is a char, returns the first character of the symbol 'string'
+
+            isDestroyed = parameters[11] == "True" ? true : false; //makes sure are units are still dead during the reload
         }
 
         /////////////////////////
-        public override bool IsDestroyedB //DEATH
+        
+        public override void Destroy() //death method to change unit symbol and true the death boolean
         {
-            get { return isDestroyedB; }
+            isDestroyed = true;
+            symbol = 'X';
         }
 
-        public override void DestroyB()
-        {
-            if (health <= 0 || resourcePoolRemaining >= 0)
-            {
-                isDestroyedB = true;
-                symbol = 'X';
-            }
-        }
-
-        //////////////////////////////
-
-        /// new
-
-        public override string ResourceType 
+      /*  public override string ResourceType  removed code
         {
             get { return resourceType; }
         }
@@ -85,14 +85,14 @@ namespace MODEL_CODE
         {
             get { return resourcesPerRound; }
             set { resourcesPerRound = value; }
-        }
+        }*/
 
 
         /// RESOURCE GENERATION METHOD RESOURCECHECK() IS IN THE BUILDING CLASS
 
         ///FACTORY
 
-        public override string FactoryUnitType
+        /*public override string FactoryUnitType
         {
             get { return factoryUnitType; }
         }
@@ -107,7 +107,7 @@ namespace MODEL_CODE
         {
             get { return spawnPoint; }
             set {spawnPoint = value; }
-        }
+        }*/
 
         public override void Save()
         {
