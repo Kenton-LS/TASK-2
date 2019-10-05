@@ -34,19 +34,20 @@
             this.lblRound = new System.Windows.Forms.Label();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnRead = new System.Windows.Forms.Button();
+            this.rtbUnitInfo2 = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // lblMap
             // 
             this.lblMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lblMap.Location = new System.Drawing.Point(12, 9);
+            this.lblMap.Location = new System.Drawing.Point(315, 9);
             this.lblMap.Name = "lblMap";
-            this.lblMap.Size = new System.Drawing.Size(253, 395);
+            this.lblMap.Size = new System.Drawing.Size(273, 395);
             this.lblMap.TabIndex = 0;
             // 
             // rtbUnitInfo
             // 
-            this.rtbUnitInfo.Location = new System.Drawing.Point(271, 7);
+            this.rtbUnitInfo.Location = new System.Drawing.Point(594, 7);
             this.rtbUnitInfo.Name = "rtbUnitInfo";
             this.rtbUnitInfo.Size = new System.Drawing.Size(341, 397);
             this.rtbUnitInfo.TabIndex = 1;
@@ -54,9 +55,9 @@
             // 
             // btnStart
             // 
-            this.btnStart.Location = new System.Drawing.Point(149, 425);
+            this.btnStart.Location = new System.Drawing.Point(222, 425);
             this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(260, 23);
+            this.btnStart.Size = new System.Drawing.Size(434, 23);
             this.btnStart.TabIndex = 2;
             this.btnStart.Text = "START / PAUSE";
             this.btnStart.UseVisualStyleBackColor = true;
@@ -65,7 +66,7 @@
             // lblRound
             // 
             this.lblRound.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lblRound.Location = new System.Drawing.Point(12, 407);
+            this.lblRound.Location = new System.Drawing.Point(12, 425);
             this.lblRound.Name = "lblRound";
             this.lblRound.Size = new System.Drawing.Size(114, 23);
             this.lblRound.TabIndex = 4;
@@ -73,7 +74,7 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(427, 425);
+            this.btnSave.Location = new System.Drawing.Point(746, 423);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(79, 23);
             this.btnSave.TabIndex = 5;
@@ -83,18 +84,27 @@
             // 
             // btnRead
             // 
-            this.btnRead.Location = new System.Drawing.Point(513, 425);
+            this.btnRead.Location = new System.Drawing.Point(831, 423);
             this.btnRead.Name = "btnRead";
             this.btnRead.Size = new System.Drawing.Size(75, 23);
             this.btnRead.TabIndex = 6;
-            this.btnRead.Text = "READ";
+            this.btnRead.Text = "LOAD";
             this.btnRead.UseVisualStyleBackColor = true;
+            // 
+            // rtbUnitInfo2
+            // 
+            this.rtbUnitInfo2.Location = new System.Drawing.Point(12, 7);
+            this.rtbUnitInfo2.Name = "rtbUnitInfo2";
+            this.rtbUnitInfo2.Size = new System.Drawing.Size(297, 397);
+            this.rtbUnitInfo2.TabIndex = 7;
+            this.rtbUnitInfo2.Text = "";
             // 
             // frm1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(617, 460);
+            this.ClientSize = new System.Drawing.Size(947, 460);
+            this.Controls.Add(this.rtbUnitInfo2);
             this.Controls.Add(this.btnRead);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.lblRound);
@@ -116,6 +126,7 @@
         private System.Windows.Forms.Label lblRound;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnRead;
+        private System.Windows.Forms.RichTextBox rtbUnitInfo2;
     }
 }
 
