@@ -10,10 +10,13 @@ namespace MODEL_CODE
     class MeleeUnit : Unit
     {
         public MeleeUnit(int x, int y, /*int health, int maxHealth, int speed, int attack, int attackRange, char symbol,*/ string faction, string nameUnit)
-               : base(x, y, 7, 7, 1, 4, 1, 'M', faction, nameUnit) { } //use the base keyword
-                                                                       ////////////////////////////////////////////////////////
+               : base(x, y, 7, 7, 1, 4, 1, 'M', faction, "Melee") { } //use the base keyword
 
-        public override int X //overridden properties
+        public MeleeUnit(string values) : base(values) { } //shortened due to unit class having these fused
+
+
+
+       /* public override int X //overridden properties
         {
             get { return x; }
             set { x = value; }
@@ -163,23 +166,12 @@ namespace MODEL_CODE
             {
                 y -= 1; //y - 1
             }
-        }
+        }*/
 
-        public override void Save()
+        public override string SaveGame()
         {
-            string spaceMaker = " ";
-            string saveString = nameUnit + spaceMaker + x + spaceMaker + y + spaceMaker + health + spaceMaker + maxHealth + spaceMaker +
-                                symbol + spaceMaker + faction + "\n";
-
-            const string FILE_NAME = "UNIT.txt";
-
-            FileStream outFile = new FileStream(FILE_NAME, FileMode.Create, FileAccess.Write);
-            StreamWriter writer = new StreamWriter(outFile);
-            writer.WriteLine(saveString);
-
-
-            writer.Close();
-            outFile.Close();
+            return string.Format(
+                $"Melee, {x}, {y}, {health}, {maxHealth}, {speed}, {attack}, {attackRange}, " + $"{faction}, {symbol}, {nameUnit}, {IsDestroyed}");
         }
     }
 }
