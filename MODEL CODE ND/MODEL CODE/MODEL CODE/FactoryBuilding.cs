@@ -32,10 +32,10 @@ namespace MODEL_CODE
             factoryType = (FactoryType)GameEngine.random.Next(0, 2);
             productionSpeed = GameEngine.random.Next(3, 7);
         }
-        
+
         ////////////////////////////////////////////////////////
 
-        public FactoryBuilding (string values) //for loading
+        public FactoryBuilding(string values) //for loading
         {
             string[] parameters = values.Split(','); //split strings into array of parameters
 
@@ -72,34 +72,42 @@ namespace MODEL_CODE
             get { return productionSpeed; } //expose this for game engine spawn unit method
         }
 
-        //////////////////////////////
-       
-        public override string ToString()
+        public Unit CreateUnit() //declare unit variable
         {
-            return resourceType + "\n" +
-                   "X: " + x + " Y: " + y + "\n" +
-                   "HP:  " + health + " / " + maxHealth + "\n" +
-                   "FACTION:  " + faction + "\nSYMBOL:  " + symbol + "\n" +
-                   "PRODUCTION SPEED:  " + productionSpeed + "\n"  /*+
-                   "RSS GAINED >> " + resourcesGenerated + " / " + resourcePoolRemaining + " << LEFTOVER RSS" + "\n" +
-                   "RSS PER ROUND:  " + resourcesPerRound + "\n"*/;
+                Unit unit;
+            if (factoryType == FactoryType.MELEE)
+            {
+                unit = new MeleeUnit(x, spawnPoint, faction); //moved here from map and program classes, efficiency
+            }
+            else
+            {
+                unit = new RangedUnit(x, spawnPoint, faction);
+            }
+            return unit;
         }
 
-        public override void Save()
+        private string GetFactoryTypeName()
         {
-            string spaceMaker = " ";
-            string saveString = resourceType + spaceMaker + x + spaceMaker + y + spaceMaker + health + spaceMaker + maxHealth + spaceMaker +
-                                symbol + spaceMaker + faction + spaceMaker + productionSpeed + "\n";
+            return new string[] { "MELEE", "RANGED" }[(int)factoryType];
+        }
 
-            const string FILE_NAME = "BUILDING.txt";
+        //////////////////////////////
 
-            FileStream outFile = new FileStream(FILE_NAME, FileMode.Create, FileAccess.Write);
-            StreamWriter writer = new StreamWriter(outFile);
-            writer.WriteLine(saveString);
+        public override string SaveGame() //everything converted into a string, separated by commas
+        {
+            return string.Format(
+                $"FACTORY, {x}, {y}, {health} / {maxHealth}, $ -> {(int)factoryType}" + //using $ shortcuts for x, y, etc
+                $"PROD SPEED: {productionSpeed}, SPAWN: {spawnPoint}" +
+                $"{faction}, {symbol}, {isDestroyed}");
+        }
 
-
-            writer.Close();
-            outFile.Close();
+        public override string ToString() //data to dispay in the rich text box
+        {
+            return "FACTORY (" + symbol + "/" + faction[0] + ")" + "\n" +
+                    "X: " + x + "Y: " + y + "\n" +
+                    "HP: " + health + " / " + maxHealth + "\n" +
+                    "$ -> " + factoryType + " :    " + "PROD SPEED: " + productionSpeed  + "\n" +
+                    "SPAWN:  " + spawnPoint + "\n";
         }
     }
 }
