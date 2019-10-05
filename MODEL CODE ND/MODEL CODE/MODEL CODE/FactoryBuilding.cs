@@ -9,102 +9,71 @@ namespace MODEL_CODE
 {
     class FactoryBuilding : Building
     {
-        public FactoryBuilding(int x, int y, string faction) : base(x, y, 10, 10, 'F', faction, "FACTORY BUILDING", 0, 0, 0, "", 6, 0) { }
-
-
-        public override int X
+        enum FactoryType //spawning specific types of factories
         {
-            get { return x; }
-            set { x = value; }
+            MELEE,
+            RANGED
         }
 
-        public override int Y
-        {
-            get { return y; }
-            set { y = value; }
-        }
+        private FactoryType factoryType;
+        private int productionSpeed;
+        private int spawnPoint; //we already have the x, we just need the y for the factory
 
-        public override int Health
+        public FactoryBuilding(int x, int y, string faction) : base(x, y, 10, /*10,*/ 'F', faction/*, "FACTORY BUILDING", 0, 0, 0, "", 6, 0*/)
         {
-            get { return health; }
-            set { health = value; }
-        }
-
-        public override int MaxHealth
-        {
-            get { return health; }
-        }
-
-        public override string Faction
-        {
-            get { return faction; }
-        }
-
-        public override char Symbol
-        {
-            get { return symbol; }
-        }
-
-        /////////////////////////
-        public override bool IsDestroyedB //DEATH
-        {
-            get { return isDestroyedB; }
-        }
-
-        public override void DestroyB()
-        {
-            if (health <= 0)
+            if (y >= Map.Size - 1)
             {
-                isDestroyedB = true;
-                symbol = 'X';
+                spawnPoint = y - 1;
             }
+            else
+            {
+                spawnPoint = y + 1;
+            }
+            factoryType = (FactoryType)GameEngine.random.Next(0, 2);
+            productionSpeed = GameEngine.random.Next(3, 7);
+        }
+        
+        ////////////////////////////////////////////////////////
+
+        public FactoryBuilding (string values) //for loading
+        {
+            string[] parameters = values.Split(','); //split strings into array of parameters
+
+            x = int.Parse(parameters[1]);
+
+            y = int.Parse(parameters[2]); //pass everything to int
+
+            health = int.Parse(parameters[3]);
+
+            maxHealth = int.Parse(parameters[4]);
+
+            factoryType = (FactoryType)int.Parse(parameters[5]); //parse to int THEN resourceType
+
+            productionSpeed = int.Parse(parameters[6]);
+
+            spawnPoint = int.Parse(parameters[7]);
+
+            faction = parameters[9];
+
+            symbol = parameters[10][0]; //symbol is a char, returns the first character of the symbol 'string'
+
+            isDestroyed = parameters[11] == "True" ? true : false; //makes sure are units are still dead during the reload
+        }
+
+        public override void Destroy()
+        {
+            isDestroyed = true;
+            symbol = 'X';
+        }
+
+
+        public int ProductionSpeed
+        {
+            get { return productionSpeed; } //expose this for game engine spawn unit method
         }
 
         //////////////////////////////
-
-        /// new
-
-        public override string ResourceType
-        {
-            get { return resourceType; }
-        }
-
-        public override int ResourcePoolRemaining
-        {
-            get { return resourcePoolRemaining; }
-            set { resourcePoolRemaining = value; }
-        }
-
-        public override int ResourcesGenerated
-        {
-            get { return resourcesGenerated; }
-            set { resourcesGenerated = value; }
-        }
-
-        public override int ResourcesPerRound
-        {
-            get { return resourcesPerRound; }
-            set { resourcesPerRound = value; }
-        }
-
-        /// FACTORY FIELDS
-        public override string FactoryUnitType
-        {
-            get { return factoryUnitType; }
-        }
-
-        public override int ProductionSpeed
-        {
-            get { return productionSpeed; }
-            set { productionSpeed = value; }
-        }
-
-        public override int SpawnPoint
-        {
-            get { return spawnPoint; }
-            set { spawnPoint = value; }
-        }
-
+       
         public override string ToString()
         {
             return resourceType + "\n" +
