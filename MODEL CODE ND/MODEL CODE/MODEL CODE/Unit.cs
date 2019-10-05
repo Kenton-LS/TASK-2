@@ -116,9 +116,7 @@ namespace MODEL_CODE
             return nameUnit + "\n" +
                    "X: " + x + " Y: " + y + "\n" +
                    "HP:  " + health + " / " + maxHealth + "\n" +
-                   "FACTION:  " + faction + "\nSYMBOL:  " + symbol + "\n";
+                   "FACTION:  " + faction[0] + "\nSYMBOL:  " + symbol + "\n";
         }
-
-        public abstract void Save();
     }
 }
