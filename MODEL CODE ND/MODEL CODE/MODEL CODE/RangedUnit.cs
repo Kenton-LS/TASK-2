@@ -9,7 +9,7 @@ namespace MODEL_CODE
 {
     class RangedUnit : Unit
     {
-        public RangedUnit(int x, int y, /*int health, int maxHealth, int speed, int attack, int attackRange, char symbol,*/ string faction, string nameUnit)
+        public RangedUnit(int x, int y, /*int health, int maxHealth, int speed, int attack, int attackRange, char symbol,*/ string faction/*, string nameUnit*/)
               : base(x, y, 5, 5, 1, 2, 3, 'R', faction, "Ranged") { } //use the base keyword
 
         public RangedUnit(string values) : base(values) { } //shortened due to unit class having these fused

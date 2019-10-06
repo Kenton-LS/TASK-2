@@ -42,7 +42,7 @@ namespace MODEL_CODE
             get { return buildings; }
         }
 
-        public int MapSize
+        public int Size
         {
             get { return mapSize; }
         }
@@ -142,11 +142,11 @@ namespace MODEL_CODE
 
                 if(unitType == 0)
                 {
-                    units[i] = new MeleeUnit(x, y, factions[factionIndex], /*nameUnits1[nameIndex]*/);
+                    units[i] = new MeleeUnit(x, y, factions[factionIndex] /*nameUnits1[nameIndex]*/);
                 }
                 else
                 {
-                    units[i] = new RangedUnit(x, y, factions[factionIndex], /*nameUnits2[nameIndex]*/);
+                    units[i] = new RangedUnit(x, y, factions[factionIndex] /*nameUnits2[nameIndex]*/);
                 }
                 map[x, y] = units[i].Faction[0] + "/" + units[i].Symbol; //returns the team and the unit type
             }

@@ -21,7 +21,7 @@ namespace MODEL_CODE
 
         public FactoryBuilding(int x, int y, string faction) : base(x, y, 10, /*10,*/ 'F', faction/*, "FACTORY BUILDING", 0, 0, 0, "", 6, 0*/)
         {
-            if (y >= Map.Size - 1)
+            if (y >= Map.mapSize - 1)
             {
                 spawnPoint = y - 1;
             }

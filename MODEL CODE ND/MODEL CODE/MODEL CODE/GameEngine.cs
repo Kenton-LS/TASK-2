@@ -45,7 +45,7 @@ namespace MODEL_CODE
             get { return map.Units.Length; }
         }
 
-        public int NumberOfBuildinga
+        public int NumberOfBuildings
         {
             get { return map.Buildings.Length; }
         }
@@ -199,7 +199,7 @@ namespace MODEL_CODE
             {
                 if (building is FactoryBuilding)
                 {
-                    FactoryBuilding factoryBuilding = (FactoryBuilding)building; //if building is a factory, it gets assigned
+                    FactoryBuilding factoryBuilding = (FactoryBuilding) building; //if building is a factory, it gets assigned
 
                     if (round % factoryBuilding.ProductionSpeed == 0) //if the round can be divided by the factory production speed, it creates a unit
                     {
@@ -209,7 +209,7 @@ namespace MODEL_CODE
                 }
                 else if (building is ResourceBuilding) //resource building
                 {
-                    ResourceBuilding resourceBuilding = (ResourceBuilding)building; //casting it
+                    ResourceBuilding resourceBuilding = (ResourceBuilding) building; //casting it
                     resourceBuilding.IncreaseResourceAmount();
                 }
             }
@@ -244,7 +244,7 @@ namespace MODEL_CODE
                 }
                 else { unit.Move(closestUnit);
                 }
-                MapBoundary(unit, map.mapSize); //MapBoundary given new parameters
+                MapBoundary(unit, map.Size); //MapBoundary given new parameters
             }
         }
         /// 
