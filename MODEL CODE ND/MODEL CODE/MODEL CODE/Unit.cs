@@ -51,7 +51,7 @@ namespace MODEL_CODE
 
             symbol = parameters[9][0]; //symbol is a char, returns the first character of the symbol 'string'
 
-            nameUnit = parameters[10]
+            nameUnit = parameters[10];
 
             isDestroyed = parameters[11] == "True" ? true : false; //makes sure are units are still dead during the reload
         }
@@ -94,8 +94,6 @@ namespace MODEL_CODE
                 otherUnit.Destroy();
             }
         }
-    }
-     
 
       /*  public abstract void Move(Unit closestUnit); //Abstract method declarations
         public abstract void Combat(Unit otherUnit);
@@ -104,11 +102,75 @@ namespace MODEL_CODE
         public abstract Unit GetClosestUnit(Unit[] units); //Returns Units, takes an array of Units
         public abstract void Kill();*/
 
+        public virtual void Move(Unit closestUnit) //this method has been moved here from the other inherited building classes, and it has been expanded
+        {
+            int moveX = closestUnit.X - X;
+
+            int moveY = closestUnit.Y - Y;
+
+            if(Math.Abs(moveX) > Math.Abs(moveY))
+            {
+                x += Math.Sign(moveX);
+            }
+            else
+            {
+                y += Math.Sign(moveY);
+            }
+        }
+
+        public virtual void Run()
+        {
+            int direction = random.Next(0, 4); //random movement
+            if(direction == 0)
+            {
+                x += 1; //if random is 0, move x + 1
+            }
+            else if (direction == 1)
+            {
+                x -= 1; //if random is 1, move x - 1
+            }
+            else if (direction == 2)
+            {
+                y += 1; //if random is 2, move y + 1
+            }
+            else if (direction == 3)
+            {
+                y -= 1; //if random is 3, move y - 1
+            }
+        }
+
         protected double GetDistance(Unit otherUnit) //helper method
         {
             double xDistance = otherUnit.X - X; //get x distance
             double yDistance = otherUnit.Y - Y; //get y distance
             return Math.Sqrt(xDistance * xDistance + yDistance * yDistance); //more efficient than Math.Pow
+        }
+
+        public virtual Unit GetClosestUnit(Unit[] units)
+        {
+            double closestDistance = int.MaxValue;
+            Unit closestUnit = null;
+
+            foreach(Unit otherUnit in units) //avoid attacking own units
+            {
+                if (otherUnit == this || otherUnit.Faction == faction || otherUnit.IsDestroyed)
+                {
+                    continue;
+                }
+
+                double distance = GetDistance(otherUnit);
+                if(distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestUnit = otherUnit;
+                }
+            }
+            return closestUnit;
+        }
+
+        public virtual bool IsInRange(Unit otherUnit) //for calculating the closest unit
+        {
+            return GetDistance(otherUnit) <= attackRange;
         }
 
         public override string ToString() //Rather place ToString here instead of dupicating it in other classes (Ranged & Melee)

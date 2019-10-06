@@ -6,18 +6,22 @@ using System.Threading.Tasks;
 
 namespace MODEL_CODE
 {
-    class GameEngine
+    class GameEngine //where the magic happens... and most of the corrections
     {
-        Map map; //filed for map
-        FactoryBuilding fb;
+        public static Random random = new Random();
 
+        Map map; //filed for map
         bool gameOver = false; //set to true if game ends
         string winning = ""; //winning faction string
         int round = 0;
 
+        const string UNITS_FILENAME = "units.txt";
+        const string BUILDINGS_FILENAME = "buildings.txt";
+        const string ROUND_FILENAME = "rounds.txt"; //makes sure round is consistent
+
         public GameEngine()
         {
-            map = new Map(10, 4); //number of units
+            map = new Map(10, 10); //making map
         }
 
         public bool GameOver
@@ -37,7 +41,7 @@ namespace MODEL_CODE
 
         ///
         
-        public string DisplayMap()
+        /*public string DisplayMap()
         {
             return map.DisplayMap(); //map. allows form to access it
         }
@@ -60,7 +64,7 @@ namespace MODEL_CODE
                 infoB += building + "\n";
             }
             return infoB;
-        }
+        }*/
 
         ///
 
@@ -75,7 +79,12 @@ namespace MODEL_CODE
 
         public void GameLoop()
         {
-            foreach (Unit unit in map.Units) //link all units in map.Units
+            UpdateUnits(); //break it into sizeable chunks
+            UpdateBuildings();
+            map.UpdateDisplay();
+            round ++;
+
+            /*foreach (Unit unit in map.Units) //link all units in map.Units
             {
                 if(unit.IsDestroyed)
                 {
@@ -123,12 +132,74 @@ namespace MODEL_CODE
 
             
             map.UpdateDisplay();
-            round++;
+            round++;*/
         }
 
+        /// 
+        /// 
+        /// 
         ///
+        public void UpdateBuildngs()
+        {
+            foreach (Building building in map.Buildings)
+            {
+                if (building is FactoryBuilding)
+                {
+                    FactoryBuilding factoryBuilding = (FactoryBuilding)building; //if building is a factory, it gets assigned
 
-        private void MapBoundary(Unit unit, int size)
+                    if (round % factoryBuilding.ProductionSpeed == 0) //if the round can be divided by the factory production speed, it creates a unit
+                    {
+                        Unit newUnit = factoryBuilding.CreateUnit();
+                        map.AddUnit(newUnit);
+                    }
+                }
+                else if (building is ResourceBuilding) //resource building
+                {
+                    ResourceBuilding resourceBuilding = (ResourceBuilding)building; //casting it
+                    resourceBuilding.IncreaseResourceAmount();
+                }
+            }
+        }
+
+        public void UpdateUnits()
+        {
+            foreach (Unit unit in map.Units)
+            {
+                if(unit.IsDestroyed) //if unit is dead, it will be discarded
+                {
+                    continue;
+                }
+
+                Unit closestUnit = unit.GetClosestUnit(map.Units);
+                if(closestUnit == null)
+                {
+                    gameOver = true;
+                    winning = unit.Faction;
+                    map.UpdateDisplay();
+                    return;
+                }
+
+                double percent = unit.Health / unit.MaxHealth; //determining whether to run away. the original code was moved here from the unit class
+                if(percent <= 0.25)
+                {
+                    unit.Run();
+                }
+                else if (unit.IsInRange(closestUnit))
+                {
+                    unit.Attack(closestUnit);
+                }
+                else { unit.Move(closestUnit);
+                }
+                MapBoundary(units, map.mapSize); //MapBoundary given new parameters
+            }
+        }
+        /// 
+        /// 
+        /// 
+        /// 
+        /// 
+
+        /*private void MapBoundary(Unit unit, int size)
         {
             if(unit.X < 0) //push in x
             {
@@ -180,6 +251,29 @@ namespace MODEL_CODE
             {
 
             }
+        }*/
+
+        private void MapBoundary(Unit unit, int mapSize)
+        {
+            if(unit.X < 0)
+            {
+                unit.X = 0;
+            }
+            else if(unit.X >= mapSize)
+            {
+                unit.X = mapSize - 1;
+            }
+
+            if(unit.Y < 0)
+            {
+                unit.Y = 0;
+            }
+            else if(unit.Y >= mapSize)
+            {
+                unit.Y = mapSize - 1;
+            }
         }
+
+
     }
 }
