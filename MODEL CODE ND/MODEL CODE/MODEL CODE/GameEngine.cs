@@ -244,7 +244,7 @@ namespace MODEL_CODE
                 }
                 else { unit.Move(closestUnit);
                 }
-                MapBoundary(units, map.mapSize); //MapBoundary given new parameters
+                MapBoundary(unit, map.mapSize); //MapBoundary given new parameters
             }
         }
         /// 
@@ -271,8 +271,27 @@ namespace MODEL_CODE
             {
                 unit.Y = size - 1;
             }
+        }*/
+
+        private void SaveRound()
+        {
+            FileStream outFile = new FileStream(ROUND_FILENAME, FileMode.Create, FileAccess.Write); //saving the round
+            StreamWriter writer = new StreamWriter(outFile);
+            writer.WriteLine(round);
+            writer.Close();
+            outFile.Close();
         }
 
+        private void LoadRound()
+        {
+            FileStream inFile = new FileStream(ROUND_FILENAME, FileMode.Open, FileAccess.Read); //loading the round
+            StreamReader reader = new StreamReader(inFile);
+            round = int.Parse(reader.ReadLine());
+            reader.Close();
+            inFile.Close();
+        }
+
+        /*
         private void BuildingBoundary(Building building, int size)
         {
             if (building.X < 0) //push in x
@@ -348,5 +367,28 @@ namespace MODEL_CODE
             return buildingInfo;
         }
 
+
+        ///
+
+        private void Save(string filename, object[] objects)
+        {
+            FileStream outFile = new FileStream(filename, FileMode.Create, FileAccess.Write);
+            StreamWriter writer = new StreamWriter(outFile);
+            foreach(object o in objects) 
+            {
+                if(o is Unit) //if object is a unit
+                {
+                    Unit unit = (Unit)o;
+                    writer.WriteLine(unit.SaveGame());
+                }
+                else if(o is Building) //if object is a building
+                {
+                    Building unit = (Building)o;
+                    writer.WriteLine(unit.SaveGame());
+                }
+            }
+            writer.Close();
+            outFile.Close();
+        }
     }
 }
