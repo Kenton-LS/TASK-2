@@ -9,25 +9,27 @@ namespace MODEL_CODE
 {
     class Map
     {
-        int mapSize = 20;
+        public const int mapSize = 20;
         public int randomNumberOfUnits;
         public int numberOfBuildings;
+
         Unit[] units;
         Building[] buildings;
+
         string[,] map; //map stored in a string to hsve 3 characters represent a block
         string[] factions = { "BLUE", "RED" };
-        string[] nameUnits1 = { "PIKEMAN", "SWORDSMAN", "KNIGHT", "BESERKER", "PALADIN" };
-        string[] nameUnits2 = { "ARCHER", "MAGE", "CROSSBOWMAN", "GRENADIER", "SPEARTHROWER" };
+        /*string[] nameUnits1 = { "PIKEMAN", "SWORDSMAN", "KNIGHT", "BESERKER", "PALADIN" };
+        string[] nameUnits2 = { "ARCHER", "MAGE", "CROSSBOWMAN", "GRENADIER", "SPEARTHROWER" };*/
 
-        Random r = new Random();
+        //Random r = new Random();
 
         ///
 
-        public Map(int randomNumberOfUnits, int numberOfBuildings)
+        public Map(int randomNumberOfUnits, int numberOfBuildings) //adds number of buildings to units
         {
             this.randomNumberOfUnits = randomNumberOfUnits; //pass the number of units
             this.numberOfBuildings = numberOfBuildings;
-            Reset();
+            Reset(); //sets size of map to a size constant, calls initialize units and buildings and updates map
         }
 
         public Unit[] Units
@@ -40,7 +42,7 @@ namespace MODEL_CODE
             get { return buildings; }
         }
 
-        public int Size
+        public int MapSize
         {
             get { return mapSize; }
         }
@@ -54,40 +56,67 @@ namespace MODEL_CODE
                 {
                     mapString += map[x, y];
                 }
+                mapString += "\n";
             }
             return mapString;
         }
 
         public void Reset()
         {
-            map = new string[mapSize, mapSize]; //initialie map
-            units = new Unit[randomNumberOfUnits]; //initialize units
-            buildings = new Building[numberOfBuildings]; ///////////////////////////////////////////maybe here
+            map = new string[mapSize, mapSize]; //initialize map
             InitializeUnits(); //calling methods
             InitializeBuildings();
             UpdateDisplay();
             
         }
 
+        public void Clear()
+        {
+            units = new Unit[0]; //when loading the map, clear it (helps the game engine)
+            buildings = new Building[0];
+        }
+
+        ///
+        ///
+        public void AddUnit(Unit unit) //without array.resize
+        {
+            Unit[] resizeUnitArray = new Unit[units.Length + 1]; //make an array with 1 extra element
+
+            for(int i = 0; i < units.Length; i++)
+            {
+                resizeUnitArray[i] = units[i];
+            }
+            resizeUnitArray[resizeUnitArray.Length - 1] = unit;
+            units = resizeUnitArray;
+        }
+
+        public void AddBuilding(Building building) //make an array with 1 extra element
+        {
+            Array.Resize(ref buildings, buildings.Length + 1);
+            buildings[buildings.Length - 1] = building;
+        }
+
+        /// 
         ///
 
-        public void UpdateDisplay() //clears the map, sets everything to dots
+        public void UpdateDisplay() //clears the map, sets everything to dots, nothing much changed here
         {
             for(int y = 0; y < mapSize; y++)
             {
                 for(int x = 0; x < mapSize; x++)
                 {
-                    map[x, y] = " . ";
+                    map[x, y] = "   "; //changed from dots to blank
                 }
             }
+
             foreach(Unit unit in units)
             {
-                map[unit.X, unit.Y] = unit.Faction[0] + "/" + unit.Symbol;
+                map[unit.X, unit.Y] = unit.Symbol + "/" + unit.Faction[0];
             }
 
             foreach(Building building in buildings)
             {
-                map[building.X, building.Y] = building.Faction[0] + "/" + building.Symbol;
+                map[building.X, building.Y] = building.Symbol + "/" + building.Faction[0];
             }
         }
 
@@ -95,71 +124,68 @@ namespace MODEL_CODE
       
         public void InitializeUnits()
         {
-            for(int i = 0;i < units.Length; i++)
+            units = new Unit[randomNumberOfUnits];
+
+            for(int i = 0;i < units.Length; i++) //for assigning random positions
             {
-                int x = r.Next(0, mapSize); //generate x and y values
-                int y = r.Next(0, mapSize);
-                int factionIndex = r.Next(0, 2); //decides blue or red team
-                int nameIndex = r.Next(0, 5);
-                int unitType = r.Next(0, 2); //decides ranged or melee
+                int x = GameEngine.random.Next(0, mapSize); //generate x and y values
+                int y = GameEngine.random.Next(0, mapSize);
+                int factionIndex = GameEngine.random.Next(0, 2); //decides blue or red team
+                int nameIndex = GameEngine.random.Next(0, 2); //CHANGED from 5 to 2
+                int unitType = GameEngine.random.Next(0, 2); //decides ranged or melee
 
                 while(map[x, y] != null)
                 {
-                    x = r.Next(0, mapSize);
-                    y = r.Next(0, mapSize);
+                    x = GameEngine.random.Next(0, mapSize);
+                    y = GameEngine.random..Next(0, mapSize); //makes sure map is unoccupied
                 }
 
                 if(unitType == 0)
                 {
-                    units[i] = new MeleeUnit(x, y, factions[factionIndex], nameUnits1[nameIndex]);
+                    units[i] = new MeleeUnit(x, y, factions[factionIndex], /*nameUnits1[nameIndex]*/);
                 }
                 else
                 {
-                    units[i] = new RangedUnit(x, y, factions[factionIndex], nameUnits2[nameIndex]);
+                    units[i] = new RangedUnit(x, y, factions[factionIndex], /*nameUnits2[nameIndex]*/);
                 }
                 map[x, y] = units[i].Faction[0] + "/" + units[i].Symbol; //returns the team and the unit type
-                
-                
             }
         }
    
+
         public void InitializeBuildings()
         {
-            
-            for (int ii = 0; ii < buildings.Length; ii++)
+            buildings = new Building[numberOfBuildings];
+
+            for (int i = 0; i < buildings.Length; i++)
             {
+                int x = GameEngine.random.Next(0, mapSize);
+                int y = GameEngine.random.Next(0, mapSize);
+                int factionIndex = GameEngine.random.Next(0, 2);
+                int buildingType = GameEngine.random.Next(0, 2);
 
-                int bx = r.Next(0, mapSize);
-                int by = r.Next(0, mapSize);
-                int factionIndex = r.Next(0, 2);
-                int buildingType = r.Next(0, 2);
-
-                while (map[bx, by] != null)
+                while (map[x, y] != null)
                 {
-                    bx = r.Next(0, mapSize);
-                    by = r.Next(0, mapSize);
+                    x = GameEngine.random.Next(0, mapSize);
+                    y = GameEngine.random.Next(0, mapSize);
                 }
 
                 if (buildingType == 0)
                 {
-                    buildings[ii] = new ResourceBuilding(bx, by, factions[factionIndex]);
-                
+                    buildings[i] = new ResourceBuilding(x, y, factions[factionIndex]);
                 }
                 else
                 {
-                    buildings[ii] = new FactoryBuilding(bx, by, factions[factionIndex]);
-                   
+                    buildings[i] = new FactoryBuilding(x, y, factions[factionIndex]);  //not many changes needed in this section
                 }
                 
-                map[bx, by] = buildings[ii].Faction[0] + "/" + buildings[ii].Symbol;
+                map[x, y] = buildings[i].Faction[0] + "/" + buildings[i].Symbol;
             }
         }
 
-        /// 
-        ///  FACTORY
-        /// 
+ 
 
-        public void Spawn(Building building)
+       /* public void Spawn(Building building)
         {
             for (int iii = 0; iii < buildings.Length; iii++)
             {
@@ -179,7 +205,7 @@ namespace MODEL_CODE
                /* if (map[cx, cy] != null)
                 {
                     
-                }*/
+                }
 
                 if (unitType == 0)
                 {
@@ -193,6 +219,6 @@ namespace MODEL_CODE
                 map[cx, cy] = units[iii].Faction[0] + "/" + units[iii].Symbol;
            
             }
-        }
+        }*/
     }
 }
