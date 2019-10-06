@@ -137,7 +137,7 @@ namespace MODEL_CODE
                 while(map[x, y] != null)
                 {
                     x = GameEngine.random.Next(0, mapSize);
-                    y = GameEngine.random..Next(0, mapSize); //makes sure map is unoccupied
+                    y = GameEngine.random.Next(0, mapSize); //makes sure map is unoccupied
                 }
 
                 if(unitType == 0)
