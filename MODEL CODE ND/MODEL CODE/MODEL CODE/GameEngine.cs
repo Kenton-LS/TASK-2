@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace MODEL_CODE
 {
@@ -39,6 +40,20 @@ namespace MODEL_CODE
             get { return round; }
         }
 
+        public int RandomNumberOfUnits
+        {
+            get { return map.Units.Length; }
+        }
+
+        public int NumberOfBuildinga
+        {
+            get { return map.Buildings.Length; }
+        }
+
+        public string MapDisplay
+        {
+            get { return map.DisplayMap(); }
+        }
         ///
         
         /*public string DisplayMap()
@@ -75,6 +90,45 @@ namespace MODEL_CODE
             round = 0;
         }
 
+        public void SaveGame2() //saving the actual game to the file
+        {
+            Save(UNITS_FILENAME, map.Units);
+            Save(BUILDINGS_FILENAME, map.Buildings);
+            SaveRound();
+        }
+
+        public void LoadGame()
+        {
+            map.Clear();
+            Load(UNITS_FILENAME); //will load the objects onto the map
+            Load(BUILDINGS_FILENAME);
+            LoadRound();
+            map.UpdateDisplay();
+        }
+
+        private void Load(string filename)
+        {
+            FileStream inFile = new FileStream(filename, FileMode.Open, FileAccess.Read);
+            StreamReader reader = new StreamReader(inFile);
+
+            string recordIn;
+            recordIn = reader.ReadLine();
+            while(recordIn != null)
+            {
+                int length = recordIn.IndexOf(","); //finds first occurrence of a comma
+                string firstField = recordIn.Substring(0, length); //from which index you want to copy, and for how long?
+                switch (firstField)
+                {
+                    case "Melee": map.AddUnit(new MeleeUnit(recordIn)); break; //adds the string, which gets chopped up by commas, adds them in
+                    case "Ranged": map.AddUnit(new RangedUnit(recordIn)); break;
+                    case "Factory": map.AddBuilding(new FactoryBuilding(recordIn)); break;
+                    case "Resource": map.AddBuilding(new ResourceBuilding(recordIn)); break;
+                }
+                recordIn = reader.ReadLine(); //readline. if it is not null, it will carry on reading until there are no lines left
+            }
+            reader.Close();
+            inFile.Close();
+        }
         ///
 
         public void GameLoop()
@@ -139,7 +193,7 @@ namespace MODEL_CODE
         /// 
         /// 
         ///
-        public void UpdateBuildngs()
+        public void UpdateBuildings()
         {
             foreach (Building building in map.Buildings)
             {
@@ -274,6 +328,25 @@ namespace MODEL_CODE
             }
         }
 
+        public string UnitInformation()
+        {
+            string unitInfo = "";
+            foreach (Unit unit in map.Units)
+            {
+                unitInfo += unit + "\n";
+            }
+            return unitInfo;
+        }
+
+        public string BuildingInformation()
+        {
+            string buildingInfo = "";
+            foreach (Building building in map.Buildings)
+            {
+                buildingInfo += building + "\n";
+            }
+            return buildingInfo;
+        }
 
     }
 }
